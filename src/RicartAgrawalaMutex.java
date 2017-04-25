@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class LamportMutex {
+public class RicartAgrawalaMutex {
     public static volatile BlockingQueue<Message> messagesToBeProcessed = new LinkedBlockingQueue<Message>();
     public static volatile List<Integer> replyPending;		//store list of pending nodes from which reply hasnt been received
     public static volatile Comparator<RequestObject> comparatorForQueue = new ComparatorForQueue ();
@@ -53,12 +53,12 @@ public class LamportMutex {
             e.printStackTrace();
             return false;
         }
-        System.out.println("Sending Request time - " + LamportMutex.scalarClock + " request Number - " + CriticalSection.countRequestsSent);
+        System.out.println("Sent Request time - " + RicartAgrawalaMutex.scalarClock + " request Number - " + CriticalSection.countRequestsSent);
         //Block enterCS function till isExecutingCS is not marked as true
         while(true){
             if(isExecutingCS) {
                 try {
-                    CriticalSection.bufferedWriter.write("\n STARTING CS BY - " + CriticalSection.self.getNodeId() + " AT TIME - " + LamportMutex.scalarClock);
+                    CriticalSection.bufferedWriter.write("\n STARTING CS BY - " + CriticalSection.self.getNodeId() + " AT TIME - " + RicartAgrawalaMutex.scalarClock);
                     CriticalSection.bufferedWriter.flush();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -74,35 +74,35 @@ public class LamportMutex {
         //Mark isExecutingCS as false,
         isExecutingCS = false;
         //Remove yourself from requestQueue
-        LamportMutex.requestQueue.poll();
+        RicartAgrawalaMutex.requestQueue.poll();
         //Critical section entry request is not sent
         CriticalSection.isRequestSent = false;
-        //Send release message to all nodes
-        sendReleaseMessage();
+        //Send reply message to all deferred requests
+        sendReplyReleaseMessages();
     }
 
-    public static void sendReleaseMessage() {
+    public static void sendReplyReleaseMessages() {
         try{
             //Increment clock value
-            LamportMutex.scalarClock = LamportMutex.scalarClock + 1;
-            CriticalSection.bufferedWriter.write("\nRELEASE CS BY - " + CriticalSection.self.getNodeId() + " AT TIME - " + LamportMutex.scalarClock);
+            RicartAgrawalaMutex.scalarClock = RicartAgrawalaMutex.scalarClock + 1;
+            CriticalSection.bufferedWriter.write("\nREPLY/RELEASE CS BY - " + CriticalSection.self.getNodeId() + " AT TIME - " + RicartAgrawalaMutex.scalarClock);
             CriticalSection.bufferedWriter.flush();
             //Generate release message
-            Message releaseMessage = new Message(MessageType.Release, CriticalSection.self.getNodeId(), LamportMutex.scalarClock);
-            Iterator<Integer> iterator = CriticalSection.nodeMap.keySet().iterator();
+            Message releaseMessage = new Message(MessageType.Reply, CriticalSection.self.getNodeId(), RicartAgrawalaMutex.scalarClock);
+            Iterator<RequestObject> iterator = RicartAgrawalaMutex.requestQueue.iterator();
             while (iterator.hasNext()) {
-                Node node = CriticalSection.nodeMap.get(iterator.next());
-                Socket socket = new Socket(node.getNodeAddr(), node.getPort());
+                RequestObject requestObject = iterator.next();
+                Socket socket = new Socket(CriticalSection.nodeMap.get(requestObject.getNodeId()).getNodeAddr(),
+                        CriticalSection.nodeMap.get(requestObject.getNodeId()).getPort());
                 ObjectOutputStream outMessage = new ObjectOutputStream(socket.getOutputStream());
                 outMessage.writeObject(releaseMessage);
                 socket.close();
             }
         }catch(Exception e){
-            System.out.println("Exception in sending release message");
+            System.out.println("Exception in sending reply/release message");
             e.printStackTrace();
         }
 
-        System.out.println("Release message sent to all neighbours");
+        System.out.println("Reply/Release message sent to all neighbours at time - " + RicartAgrawalaMutex.scalarClock);
     }
-
 }

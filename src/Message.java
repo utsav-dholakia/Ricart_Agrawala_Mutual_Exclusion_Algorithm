@@ -6,8 +6,8 @@ import java.io.Serializable;
 
 enum MessageType {
     Request,
-    Reply,
-    Release;
+    Reply;
+    //Release;
 }
 
 public class Message implements Serializable{

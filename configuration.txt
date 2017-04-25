@@ -1,0 +1,7 @@
+#total nodes    mean-inter-request-delay    mean-cs-execution-time  total-requests
+2	20	10	300
+0 cometnet-10-21-28-27.utdallas.edu 1234
+1 dc01.utdallas.edu 1233
+#2 dc04.utdallas.edu 1233
+#3 dc05.utdallas.edu 1232
+#4 dc06.utdallas.edu 1233

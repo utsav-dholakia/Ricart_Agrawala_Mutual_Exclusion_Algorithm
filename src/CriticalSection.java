@@ -41,13 +41,8 @@ public class CriticalSection {
             if(!isRequestSent){		//if no request message has been sent, then send one
                 countRequestsSent++;
                 //Request to enter criticalSection
-                enterCriticalSection = LamportMutex.csEnter();
+                enterCriticalSection = RicartAgrawalaMutex.csEnter();
                 if(enterCriticalSection){
-                    //Print log of entering critical section
-                    /*now = new Date();
-                    String s = df.format(now);
-                    String result = s.substring(0, 26) + ":" + s.substring(27);
-                    bufferedWriter.write("Entering critical section - " + result);*/
                     //Invoke execute critical section method
                     executeCriticalSection();
                 }
@@ -69,18 +64,8 @@ public class CriticalSection {
              // TODO Auto-generated catch block
              e.printStackTrace();
          }
-        //After task is done
-        //Print log of exiting critical section
-        /*Date now = new Date();
-        String s = df.format(now);
-        String result = s.substring(0, 26) + ":" + s.substring(27);
-        try {
-            bufferedWriter.write("Exiting critical section - " + result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-        //invoke csExit method of lamport protocol
-        LamportMutex.csExit();
+         //invoke csExit method of lamport protocol
+        RicartAgrawalaMutex.csExit();
     }
 
     public static void initialize(){
