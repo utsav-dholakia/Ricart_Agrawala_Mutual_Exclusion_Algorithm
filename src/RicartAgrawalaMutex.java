@@ -58,7 +58,7 @@ public class RicartAgrawalaMutex {
         while(true){
             if(isExecutingCS) {
                 try {
-                    CriticalSection.bufferedWriter.write("\n STARTING CS BY - " + CriticalSection.self.getNodeId() + " AT TIME - " + RicartAgrawalaMutex.scalarClock);
+                    CriticalSection.bufferedWriter.write("\n" + CriticalSection.self.getNodeId() +  " : START - " + RicartAgrawalaMutex.scalarClock);
                     CriticalSection.bufferedWriter.flush();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -74,7 +74,7 @@ public class RicartAgrawalaMutex {
         //Mark isExecutingCS as false,
         isExecutingCS = false;
         //Remove yourself from requestQueue
-        RicartAgrawalaMutex.requestQueue.poll();
+        //RicartAgrawalaMutex.requestQueue.poll();
         //Critical section entry request is not sent
         CriticalSection.isRequestSent = false;
         //Send reply message to all deferred requests
@@ -85,7 +85,7 @@ public class RicartAgrawalaMutex {
         try{
             //Increment clock value
             RicartAgrawalaMutex.scalarClock = RicartAgrawalaMutex.scalarClock + 1;
-            CriticalSection.bufferedWriter.write("\nREPLY/RELEASE CS BY - " + CriticalSection.self.getNodeId() + " AT TIME - " + RicartAgrawalaMutex.scalarClock);
+            CriticalSection.bufferedWriter.write("\n" + CriticalSection.self.getNodeId()  + " : RELEASE - " + RicartAgrawalaMutex.scalarClock);
             CriticalSection.bufferedWriter.flush();
             //Generate release message
             Message releaseMessage = new Message(MessageType.Reply, CriticalSection.self.getNodeId(), RicartAgrawalaMutex.scalarClock);
