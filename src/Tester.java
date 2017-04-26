@@ -21,7 +21,6 @@ public class Tester {
 			
 			FileWriter write = new FileWriter("validate.txt");
 			BufferedWriter bw = new BufferedWriter(write);
-			
 			for(int i=1; i<=count; i++){
 				read = new FileReader("log-"+i+".txt");
 				br = new BufferedReader(read);
@@ -36,9 +35,8 @@ public class Tester {
 			write.close();
 			bw.close();
 
-			
 			//logic to sort/count
-			read = new FileReader("validate.txt");
+			read = new FileReader("src/validate.txt");
 			br = new BufferedReader(read);
 			
 			while((line = br.readLine()) != null){
@@ -64,7 +62,7 @@ public class Tester {
 			});
 			
 			//Computing
-			int safeCount[] = null;
+			int safeCount[] = new int[count];
 			for(int j=1; j<=list.size(); j+=2){
 				if(list.size()%2 == 0){
 					if(list.get(j).getNodeId() == list.get(j-1).getNodeId() && list.get(j).getType() == "RELEASE" && list.get(j-1).getType() == "START" && list.get(j).getTimeStamp() > list.get(j-1).getTimeStamp()){
@@ -73,9 +71,9 @@ public class Tester {
 				}
 			}
 			
-			write= new FileWriter("Results.txt");
+			write= new FileWriter("src/Results.txt");
 			bw = new BufferedWriter(write);
-			for(int i=1; i<=list.size();i++){
+			for(int i=1; i<=2;i++){
 				bw.write("Total Critical Section Access count for node "+ i + " is: " + safeCount[i]);
 			}
 			
