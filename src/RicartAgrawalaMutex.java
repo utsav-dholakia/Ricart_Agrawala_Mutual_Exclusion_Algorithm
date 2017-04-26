@@ -58,7 +58,7 @@ public class RicartAgrawalaMutex {
         while(true){
             if(isExecutingCS) {
                 try {
-                    CriticalSection.bufferedWriter.write("\n" + CriticalSection.self.getNodeId() +  " : START - " + RicartAgrawalaMutex.scalarClock);
+                    CriticalSection.bufferedWriter.write("\n" + CriticalSection.self.getNodeId() +  "   START   " + RicartAgrawalaMutex.scalarClock);
                     CriticalSection.bufferedWriter.flush();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -85,7 +85,7 @@ public class RicartAgrawalaMutex {
         try{
             //Increment clock value
             RicartAgrawalaMutex.scalarClock = RicartAgrawalaMutex.scalarClock + 1;
-            CriticalSection.bufferedWriter.write("\n" + CriticalSection.self.getNodeId()  + " : RELEASE - " + RicartAgrawalaMutex.scalarClock);
+            CriticalSection.bufferedWriter.write("\n" + CriticalSection.self.getNodeId()  + "   RELEASE   " + RicartAgrawalaMutex.scalarClock);
             CriticalSection.bufferedWriter.flush();
             //Generate release message
             Message releaseMessage = new Message(MessageType.Reply, CriticalSection.self.getNodeId(), RicartAgrawalaMutex.scalarClock);
