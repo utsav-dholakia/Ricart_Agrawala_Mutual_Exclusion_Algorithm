@@ -73,7 +73,7 @@ public class Tester {
 			
 			write= new FileWriter("src/Results.txt");
 			bw = new BufferedWriter(write);
-			for(int i=1; i<=2;i++){
+			for(int i=1; i<=count;i++){
 				bw.write("Total Critical Section Access count for node "+ i + " is: " + safeCount[i]);
 			}
 			
